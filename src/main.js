@@ -1,7 +1,5 @@
 'use scrict'
 
-const { Physics } = require("phaser")
-
 let config = {
     type: Phaser.AUTO,
     width: 640,
