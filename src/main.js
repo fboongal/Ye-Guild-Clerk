@@ -15,7 +15,7 @@ let config = {
         }
     },
     pixelArt: true,
-    scene: [ Menu ]
+    scene: [ Menu, Play ]
 }
 
 let game = new Phaser.Game(config)
@@ -25,4 +25,9 @@ let centerY = game.config.height/2
 let w = game.config.width
 let h = game.config.height
 
-let cursors 
+let cursors
+
+/*
+Citations:
+- Mouse events by lowpolyprincess: https://www.youtube.com/watch?v=156GXOSjJ4g
+*/

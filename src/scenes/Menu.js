@@ -8,9 +8,8 @@ class Menu extends Phaser.Scene {
     }
 
     create(){
-
-        // display menu
-        let menuConfig = {
+        // title config
+        let titleConfig = {
             fontFamily: 'Courier',
             fontSize: '28px',
             backgroundColor: '#F3B141',
@@ -23,8 +22,25 @@ class Menu extends Phaser.Scene {
             fixedWidth: 0
         }
 
-        // display menu text
-        this.add.text(centerX, centerY, 'Ye Guild Clerk!', menuConfig).setOrigin(0.5)
+        // button config
+        let buttonConfig = {
+            fontSize: '20px',
+            backgroundColor: '#FFFFFF',
+            color: '#000000'
+        }
+
+        // display title text
+        this.add.text(centerX, centerY - 25, ' Ye Guild Clerk! ', titleConfig).setOrigin(0.5)
+    
+        // display play button
+        const playButton = this.add.text(centerX, centerY + 25, ' PLAY ', buttonConfig).setOrigin(0.5)
+        // make play button interactive
+        playButton.setInteractive()
+        // on click, start playScene
+        playButton.on("pointerdown", (pointer)=>{
+            console.log("click")
+            this.scene.start('playScene')
+        })
     }
 
     update(){
