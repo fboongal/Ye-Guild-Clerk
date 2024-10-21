@@ -4,7 +4,14 @@ class Menu extends Phaser.Scene {
     }
 
     preload(){
+        this.load.path = './assets/'
 
+        // load background assets
+        this.load.image('tempbg', 'img/tempbg.png')
+
+        // load UI assets
+        this.load.image('box', 'img/box.png')
+        this.load.image('divider', 'img/divider.png')
     }
 
     create(){

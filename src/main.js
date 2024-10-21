@@ -25,6 +25,8 @@ let centerY = game.config.height/2
 let w = game.config.width
 let h = game.config.height
 
+let invY = 330
+
 let cursors
 
 /*
