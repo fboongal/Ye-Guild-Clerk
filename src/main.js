@@ -1,6 +1,6 @@
 'use scrict'
 
-let config = {
+const config = {
     type: Phaser.AUTO,
     width: 640,
     height: 360,
@@ -18,7 +18,7 @@ let config = {
     scene: [ Menu, Play ]
 }
 
-let game = new Phaser.Game(config)
+const game = new Phaser.Game(config)
 
 let centerX = game.config.width/2
 let centerY = game.config.height/2
@@ -32,4 +32,6 @@ let cursors
 /*
 Citations:
 - Mouse events by lowpolyprincess: https://www.youtube.com/watch?v=156GXOSjJ4g
+- Camera Setup by nathanaltice: https://github.com/nathanaltice/ScrollingStyles & https://github.com/nathanaltice/CameraLucida & https://github.com/nathanaltice/Camz 
+- Ding audio by domrodrig: https://freesound.org/people/domrodrig/sounds/116779/
 */

@@ -7,11 +7,19 @@ class Menu extends Phaser.Scene {
         this.load.path = './assets/'
 
         // load background assets
-        this.load.image('tempbg', 'img/tempbg.png')
+        this.load.image('bg', 'img/exBG.png')
 
         // load UI assets
         this.load.image('box', 'img/box.png')
         this.load.image('divider', 'img/divider.png')
+
+        // load items
+        this.load.image('gold', 'img/gold.png')
+        this.load.image('flyer', 'img/questFlyer.png')
+        this.load.image('bell', 'img/bell.png')
+
+        // load audio
+        this.load.audio('ding', 'audio/ding.wav')
     }
 
     create(){
@@ -51,6 +59,7 @@ class Menu extends Phaser.Scene {
     }
 
     update(){
-
+        // shortcut to start play scene
+        this.scene.start('playScene');
     }
 }
