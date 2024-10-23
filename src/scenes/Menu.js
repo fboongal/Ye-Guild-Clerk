@@ -8,6 +8,7 @@ class Menu extends Phaser.Scene {
 
         // load background assets
         this.load.image('bg', 'img/exBG.png')
+        this.load.image('end', 'img/end.png')
 
         // load UI assets
         this.load.image('box', 'img/box.png')
@@ -17,12 +18,29 @@ class Menu extends Phaser.Scene {
         this.load.image('gold', 'img/gold.png')
         this.load.image('flyer', 'img/questFlyer.png')
         this.load.image('bell', 'img/bell.png')
+        this.load.image('tray', 'img/tray.png')
 
         // load audio
         this.load.audio('ding', 'audio/ding.wav')
+        this.load.audio('music', 'audio/music.wav')
     }
 
     create(){
+
+        // add music
+        this.music = this.sound.add('music', { volume: 0.25, loop: true });
+
+        if(!this.musicPlayed){
+            this.music.play()
+            this.musicPlayed = true
+        }
+
+        if (this.musicPlayed && this.scene.isActive('playScene')){
+            this.musicPlayed = false
+        }
+        
+        
+
         // title config
         let titleConfig = {
             fontFamily: 'Courier',
@@ -56,10 +74,13 @@ class Menu extends Phaser.Scene {
             console.log("click")
             this.scene.start('playScene')
         })
+
+        // instruction text
+        document.getElementById('info').innerHTML = 'Controls: [Left Click] to interact. [1] to see counter. [2] to see reward storage.'
     }
 
     update(){
         // shortcut to start play scene
-        this.scene.start('playScene');
+        // this.scene.start('playScene');
     }
 }

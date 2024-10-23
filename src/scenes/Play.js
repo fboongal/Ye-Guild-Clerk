@@ -8,6 +8,7 @@ class Play extends Phaser.Scene {
     }
 
     create(){
+
         // display background
         this.bg = this.add.image(0, 0, 'bg').setOrigin(0)
 
@@ -29,35 +30,35 @@ class Play extends Phaser.Scene {
         this.divider = this.add.sprite(395, centerY, 'divider');
 
         // hotbar boxes
-        let inv1 = this.add.sprite(430, invY, 'box')
-        inv1.setInteractive()
-        inv1.on("pointerdown", (pointer)=>{
-            console.log("click 1");
-        });
+        // let inv1 = this.add.sprite(430, invY, 'box')
+        // inv1.setInteractive()
+        // inv1.on("pointerdown", (pointer)=>{
+        //     console.log("click 1");
+        // });
         
-        let inv2 = this.add.sprite(475, invY, 'box')
-        inv2.setInteractive()
-        inv2.on("pointerdown", (pointer)=>{
-            console.log("click 2")
-        });
+        // let inv2 = this.add.sprite(475, invY, 'box')
+        // inv2.setInteractive()
+        // inv2.on("pointerdown", (pointer)=>{
+        //     console.log("click 2")
+        // });
 
-        let inv3 = this.add.sprite(520, invY, 'box')
-        inv3.setInteractive()
-        inv3.on("pointerdown", (pointer)=>{
-            console.log("click 3")
-        });
+        // let inv3 = this.add.sprite(520, invY, 'box')
+        // inv3.setInteractive()
+        // inv3.on("pointerdown", (pointer)=>{
+        //     console.log("click 3")
+        // });
 
-        let inv4 = this.add.sprite(565, invY, 'box')
-        inv4.setInteractive()
-        inv4.on("pointerdown", (pointer)=>{
-            console.log("click 4")
-        });
+        // let inv4 = this.add.sprite(565, invY, 'box')
+        // inv4.setInteractive()
+        // inv4.on("pointerdown", (pointer)=>{
+        //     console.log("click 4")
+        // });
 
-        let inv5 = this.add.sprite(610, invY, 'box')
-        inv5.setInteractive()
-        inv5.on("pointerdown", (pointer)=>{
-            console.log("click 5")
-        });
+        // let inv5 = this.add.sprite(610, invY, 'box')
+        // inv5.setInteractive()
+        // inv5.on("pointerdown", (pointer)=>{
+        //     console.log("click 5")
+        // });
 
         // add desk bell & ding 
 
@@ -71,15 +72,17 @@ class Play extends Phaser.Scene {
         })
 
         // add reward tray
-        this.tray = this.add.rectangle(200, 280, 200, 40, 0xff0000)
+        this.tray = this.physics.add.sprite(200, 290, 'tray')
+        this.tray.setImmovable()
 
         // add quest contract
-        const flyer = this.add.image(520, 150, 'flyer')
-        flyer.setInteractive({ draggable: true, cursor: "pointer" })
+        this.flyer = this.add.image(520, 150, 'flyer')
+        this.flyer.setInteractive({ draggable: true, cursor: "pointer" })
 
         // add gold
-        const gold = this.add.image(100, 400, 'gold')
-        gold.setInteractive({ draggable: true, cursor: "pointer" });
+        this.gold = this.physics.add.image(115, 405, 'gold');
+        this.gold.setInteractive({ draggable: true, cursor: "pointer" });
+        
         // this.cam.startFollow(gold, false, 0.5, 0.5)
 
         // drag items
@@ -87,12 +90,15 @@ class Play extends Phaser.Scene {
             gameobject.setPosition(dragX, dragY)
         });
         
-        // return item to starting position 
+        // return item to starting position / this does nothing for now
         this.input.on("pointerup", pointer => {
             if (pointer.leftButtonReleased()) {
                 // gold.setPosition(centerX, centerY)
             }
         })
+
+        // detect overlap between tray & gold
+        this.physics.add.overlap(this.gold, this.tray, this.enterTray, null, this)
     }
 
     update(){
@@ -104,5 +110,9 @@ class Play extends Phaser.Scene {
             this.cam.setScroll(centerX, 720)
         }
         
+    }
+
+    enterTray() {
+        this.scene.start('winScene');
     }
 }

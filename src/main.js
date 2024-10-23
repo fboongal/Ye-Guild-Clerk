@@ -1,11 +1,12 @@
 'use scrict'
 
 const config = {
+    parent: 'phaser-game',
     type: Phaser.AUTO,
     width: 640,
     height: 360,
     scale: {
-        mode: Phaser.Scale.FIT,
+        // mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH
     },
     physics: {
@@ -15,7 +16,7 @@ const config = {
         }
     },
     pixelArt: true,
-    scene: [ Menu, Play ]
+    scene: [ Menu, Play, Win ]
 }
 
 const game = new Phaser.Game(config)
@@ -34,4 +35,5 @@ Citations:
 - Mouse events by lowpolyprincess: https://www.youtube.com/watch?v=156GXOSjJ4g
 - Camera Setup by nathanaltice: https://github.com/nathanaltice/ScrollingStyles & https://github.com/nathanaltice/CameraLucida & https://github.com/nathanaltice/Camz 
 - Ding audio by domrodrig: https://freesound.org/people/domrodrig/sounds/116779/
+- Background Music by NitroTech84: https://freesound.org/people/NitroTech84/sounds/727905/
 */
