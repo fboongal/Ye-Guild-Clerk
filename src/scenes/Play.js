@@ -82,8 +82,15 @@ class Play extends Phaser.Scene {
         // add gold
         this.gold = this.physics.add.image(115, 405, 'gold');
         this.gold.setInteractive({ draggable: true, cursor: "pointer" });
+
+        // follow cursor
         
-        // this.cam.startFollow(gold, false, 0.5, 0.5)
+        this.input.on('pointermove', (pointer) => {
+            this.cam.scrollX = Phaser.Math.Clamp(pointer.x - this.cam.width / 2, 0, this.bg.width - this.cam.width);
+            this.cam.scrollY = Phaser.Math.Clamp(pointer.y - this.cam.height / 2, 0, this.bg.height - this.cam.height);
+        });
+          
+        // this.cam.startFollow(pointer, true, 0.5, 0.5)
 
         // drag items
          this.input.on("drag", (pointer, gameobject, dragX, dragY) => {
@@ -102,13 +109,13 @@ class Play extends Phaser.Scene {
     }
 
     update(){
-        // cam switcher
-        if(Phaser.Input.Keyboard.JustDown(this.cam1)) {
-            this.cam.setScroll(0, 0)
-        }
-        if(Phaser.Input.Keyboard.JustDown(this.cam2)) {
-            this.cam.setScroll(centerX, 720)
-        }
+        // // cam switcher
+        // if(Phaser.Input.Keyboard.JustDown(this.cam1)) {
+        //     this.cam.setScroll(0, 0)
+        // }
+        // if(Phaser.Input.Keyboard.JustDown(this.cam2)) {
+        //     this.cam.setScroll(centerX, 720)
+        // }
         
     }
 
