@@ -21,44 +21,20 @@ class Play extends Phaser.Scene {
         this.cam = this.cameras.main
         this.cam.setBounds(0, 0, this.bg.width, this.bg.height)
         this.physics.world.setBounds(0, 0, this.bg.width, this.bg.height)
+        const cameraSpeed = 0.1;
 
-        // enable cam switcher
-        this.cam1 = this.num1Key
-        this.cam2 = this.num2Key
+        // make camera follow cursor
+        this.input.on('pointermove', (pointer) => {
+        const targetX = Phaser.Math.Clamp(pointer.x - this.cam.width / 2, 0, this.bg.width - this.cam.width);
+        
+        const targetY = Phaser.Math.Clamp(pointer.y - this.cam.height / 2, 0, this.bg.height - this.cam.height);
+
+        this.cam.scrollX += (targetX - this.cam.scrollX) * cameraSpeed;
+        this.cam.scrollY += (targetY - this.cam.scrollY) * cameraSpeed;
+        });
         
         // display temp divider line
         this.divider = this.add.sprite(395, centerY, 'divider');
-
-        // hotbar boxes
-        // let inv1 = this.add.sprite(430, invY, 'box')
-        // inv1.setInteractive()
-        // inv1.on("pointerdown", (pointer)=>{
-        //     console.log("click 1");
-        // });
-        
-        // let inv2 = this.add.sprite(475, invY, 'box')
-        // inv2.setInteractive()
-        // inv2.on("pointerdown", (pointer)=>{
-        //     console.log("click 2")
-        // });
-
-        // let inv3 = this.add.sprite(520, invY, 'box')
-        // inv3.setInteractive()
-        // inv3.on("pointerdown", (pointer)=>{
-        //     console.log("click 3")
-        // });
-
-        // let inv4 = this.add.sprite(565, invY, 'box')
-        // inv4.setInteractive()
-        // inv4.on("pointerdown", (pointer)=>{
-        //     console.log("click 4")
-        // });
-
-        // let inv5 = this.add.sprite(610, invY, 'box')
-        // inv5.setInteractive()
-        // inv5.on("pointerdown", (pointer)=>{
-        //     console.log("click 5")
-        // });
 
         // add desk bell & ding 
 
@@ -82,15 +58,6 @@ class Play extends Phaser.Scene {
         // add gold
         this.gold = this.physics.add.image(115, 405, 'gold');
         this.gold.setInteractive({ draggable: true, cursor: "pointer" });
-
-        // follow cursor
-        
-        this.input.on('pointermove', (pointer) => {
-            this.cam.scrollX = Phaser.Math.Clamp(pointer.x - this.cam.width / 2, 0, this.bg.width - this.cam.width);
-            this.cam.scrollY = Phaser.Math.Clamp(pointer.y - this.cam.height / 2, 0, this.bg.height - this.cam.height);
-        });
-          
-        // this.cam.startFollow(pointer, true, 0.5, 0.5)
 
         // drag items
          this.input.on("drag", (pointer, gameobject, dragX, dragY) => {

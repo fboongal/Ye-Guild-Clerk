@@ -76,7 +76,7 @@ class Menu extends Phaser.Scene {
         })
 
         // instruction text
-        document.getElementById('info').innerHTML = 'Controls: [Left Click] to interact. [1] to see counter. [2] to see reward storage.'
+        document.getElementById('info').innerHTML = 'Controls: Press [Left Click] to interact. Hold [Left Click] to drag.'
     }
 
     update(){
