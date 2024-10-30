@@ -26,7 +26,11 @@ let centerY = game.config.height/2
 let w = game.config.width
 let h = game.config.height
 
-let invY = 330
+// y values for cubbies
+let row1
+let row2
+let row3 = 615
+let row4 
 
 let cursors
 

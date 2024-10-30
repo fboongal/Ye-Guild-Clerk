@@ -20,9 +20,20 @@ class Menu extends Phaser.Scene {
 
         // load items
         this.load.image('gold', 'img/gold.png')
-        this.load.image('fQuest', 'img/frogeQuest.png')
         this.load.image('bell', 'img/bell.png')
         this.load.image('tray', 'img/tray.png')
+
+        this.load.image('gSack', 'img/sack.png')
+
+        this.load.image('aGem', 'img/ame.png')
+        this.load.image('dGem', 'img/dia.png')
+        this.load.image('eGem', 'img/emerald.png')
+        this.load.image('rGem', 'img/ruby.png')
+        this.load.image('sGem', 'img/sapphire.png')
+
+        this.load.image('fQuest', 'img/frogeQuest.png')
+        this.load.image('aQuest', 'img/axoQuest.png')
+        this.load.image('tQuest', 'img/todQuest.png')
 
         // load audio
         this.load.audio('ding', 'audio/ding.wav')
@@ -86,6 +97,6 @@ class Menu extends Phaser.Scene {
 
     update(){
         // shortcut to start play scene
-        // this.scene.start('playScene');
+        this.scene.start('playScene');
     }
 }

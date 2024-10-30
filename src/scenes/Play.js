@@ -26,7 +26,7 @@ class Play extends Phaser.Scene {
         this.input.on('pointermove', (pointer) => {
             // check if mouse is above a certain Y position (e.g., 400)
             if (pointer.y > 500 && !this.isCameraDown) {
-                this.isCameraDown = true; // set camera state to down
+                this.isCameraDown = true; 
                 this.tweens.add({
                     targets: this.cam,
                     scrollY: 200, // move camera down
@@ -34,7 +34,7 @@ class Play extends Phaser.Scene {
                     ease: 'Power2', 
                 });
             } else if (pointer.y < 200 && this.isCameraDown) {
-                this.isCameraDown = false; // set camera state to up
+                this.isCameraDown = false; 
                 this.tweens.add({
                     targets: this.cam,
                     scrollY: 0, // move camera back up
@@ -61,20 +61,36 @@ class Play extends Phaser.Scene {
         this.tray = this.physics.add.sprite(200, 340, 'tray').setImmovable().setDepth(5);
 
         // add quests
-        this.fQuest = this.add.image(520, 150, 'fQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5);
+        this.quests = [
+            this.fQuest = this.add.image(500, 120, 'fQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.aQuest = this.add.image(560, 180, 'aQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.tQuest = this.add.image(520, 220, 'tQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
+        ];
 
-        // add gold
-        this.gold = this.physics.add.image(115, 460, 'gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5);
+        // add reward items
+        this.items = [
+            this.gold = this.physics.add.image(115, 460, 'gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.aGem = this.add.image(440, 615, 'aGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.dGem = this.add.image(100, 100, 'dGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.eGem = this.add.image(100, 100, 'eGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.rGem = this.add.image(100, 100, 'rGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.sGem = this.add.image(100, 100, 'sGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.gSack = this.add.image(100, 100, 'gSack').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
+        ];
 
-        // add hover effect for draggable items
-        this.addHoverEffect(this.fQuest);
-        this.addHoverEffect(this.gold);
+        // apply hover for quests and itmes
+        this.items.forEach(item => {
+            this.addHoverEffect(item);
+        });
+        this.quests.forEach(item => {
+            this.addHoverEffect(item);
+        });
 
         // drag items
         this.input.on("dragstart", (pointer, gameObject) => {
             this.isDragging = true;
             gameObject.setAlpha(0.8); 
-            gameObject.originalDepth = gameObject.depth; // Store original depth
+            gameObject.originalDepth = gameObject.depth; 
             gameObject.setDepth(10); 
             this.stopBobbing(gameObject);
             
@@ -89,8 +105,8 @@ class Play extends Phaser.Scene {
 
         this.input.on("dragend", (pointer, gameObject) => {
             this.isDragging = false;
-            gameObject.setAlpha(1); // Reset alpha when done dragging
-            gameObject.setDepth(gameObject.originalDepth); // Restore original depth
+            gameObject.setAlpha(1); 
+            gameObject.setDepth(gameObject.originalDepth); 
         });
         
         // return item to starting position / this does nothing for now
@@ -123,9 +139,8 @@ class Play extends Phaser.Scene {
     }
 
     handleGoldOnTray(gold, tray) {
-        // Check if the gold is within the tray bounds
-        this.isGoldOnTray = true; // Set gold is on tray
-        this.itemOnTray = true; // Set item on tray
+        this.isGoldOnTray = true; 
+        this.itemOnTray = true; 
         console.log('Gold is now on the tray');
     }
 
@@ -133,29 +148,19 @@ class Play extends Phaser.Scene {
         const goldBounds = this.gold.getBounds();
         const trayBounds = this.tray.getBounds();
 
-        // Check if the gold is still inside the tray bounds
         const isInsideTray = Phaser.Geom.Intersects.RectangleToRectangle(goldBounds, trayBounds);
 
         if (isInsideTray && !this.isGoldOnTray) {
             this.isGoldOnTray = true;
-            this.itemOnTray = true; // Set item on tray
+            this.itemOnTray = true; 
             console.log('Gold has entered the tray');
         } else if (!isInsideTray && this.isGoldOnTray) {
             this.isGoldOnTray = false;
-            this.itemOnTray = false; // Reset item on tray
+            this.itemOnTray = false; 
             console.log('Gold has left the tray');
         }
     }
 
-    // enterTray() {
-    //     this.itemOnTray = true;
-    //     console.log("item in tray")
-    // }
-
-    // leaveTray() {
-    //     this.itemOnTray = false;
-    //     console.log("item left tray")
-    // }
 
     bellRung() {
         if (this.itemOnTray === true) { 
@@ -171,7 +176,6 @@ class Play extends Phaser.Scene {
     }
 
     bobItem(item) {
-        // Start a bobbing effect using a tween
         if (!this.isDragging){
             this.tweens.add({
                 targets: item,
