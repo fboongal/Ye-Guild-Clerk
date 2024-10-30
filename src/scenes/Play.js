@@ -86,6 +86,9 @@ class Play extends Phaser.Scene {
             this.gSack = this.physics.add.image(70, row4 - 15, 'gSack').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
         ];
 
+        this.items.forEach(item => {
+            item.originalPosition = { x: item.x, y: item.y };
+        });
         
 
 
@@ -101,17 +104,15 @@ class Play extends Phaser.Scene {
         // drag items
         this.input.on("dragstart", (pointer, gameObject) => {
             this.isDragging = true;
-            gameObject.setAlpha(0.8); 
-            gameObject.originalDepth = gameObject.depth; 
-            gameObject.setDepth(10); 
+            gameObject.setAlpha(0.8);
+            gameObject.originalDepth = gameObject.depth;
+            gameObject.setDepth(10);
             this.stopBobbing(gameObject);
-            
-            gameObject.originalPosition = { x: gameObject.x, y: gameObject.y }; 
         });
 
         this.input.on("drag", (pointer, gameObject, dragX, dragY) => {
             if (this.isDragging) {
-            gameObject.setPosition(dragX, dragY);
+                gameObject.setPosition(dragX, dragY);
             }
         });
 
@@ -119,17 +120,18 @@ class Play extends Phaser.Scene {
             this.isDragging = false;
             gameObject.setAlpha(1);
             gameObject.setDepth(gameObject.originalDepth);
-            
-            // Check if gSack is placed on tray
-            if (gameObject === this.gSack && !this.isGreenSackOnTray) {
-                this.gSack.setVisible(true); // Show the sack again if needed
-            }
-        });
         
-        // return item to starting position / this does nothing for now
-        this.input.on("pointerup", pointer => {
-            if (pointer.leftButtonReleased()) {
-                // gold.setPosition(centerX, centerY)
+            // Check if the item is placed on the tray
+            const isOnTray = this.physics.overlap(gameObject, this.tray);
+            
+            if (!isOnTray) {
+                // Return to original position if not on the tray
+                gameObject.setPosition(gameObject.originalPosition.x, gameObject.originalPosition.y);
+            } else {
+                // If it's the green sack, update the state
+                if (gameObject === this.gSack) {
+                    this.isGreenSackOnTray = true;
+                }
             }
         });
 
