@@ -40,6 +40,7 @@ class Menu extends Phaser.Scene {
         this.load.image('fQuest', 'img/frogeQuest.png')
         this.load.image('aQuest', 'img/axoQuest.png')
         this.load.image('tQuest', 'img/todQuest.png')
+        this.load.image('bQuest', 'img/bartQuest.png')
 
         // load audio
         this.load.audio('ding', 'audio/ding.wav')

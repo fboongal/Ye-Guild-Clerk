@@ -5,8 +5,7 @@ class Play extends Phaser.Scene {
 
     init(){
         this.isDragging = false;
-        this.isGoldOnTray = false;
-        this.isRubyOnTray = false;
+        this.isGreenSackOnTray = false;
         this.isTyping = false;
     }
 
@@ -70,6 +69,7 @@ class Play extends Phaser.Scene {
         // add quests
         this.quests = [
             this.fQuest = this.add.image(500, 120, 'fQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.bQuest = this.add.image(570, 140, 'bQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
             this.aQuest = this.add.image(560, 180, 'aQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
             this.tQuest = this.add.image(520, 220, 'tQuest').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
         ];
@@ -78,12 +78,12 @@ class Play extends Phaser.Scene {
         this.items = [
             this.twoGold = this.physics.add.image(col1, row4 + 10, '2gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
             this.threeGold = this.physics.add.image(col3, row2, '3gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.aGem = this.add.image(col4, row1, 'aGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.dGem = this.add.image(col2, row3, 'dGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.eGem = this.add.image(col1, row2, 'eGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.rGem = this.add.image(col4, row4, 'rGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.sGem = this.add.image(col2, row1, 'sGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.gSack = this.add.image(70, row4 - 15, 'gSack').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
+            this.aGem = this.physics.add.image(col4, row1, 'aGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.dGem = this.physics.add.image(col2, row3, 'dGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.eGem = this.physics.add.image(col1, row2, 'eGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.rGem = this.physics.add.image(col4, row4, 'rGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.sGem = this.physics.add.image(col2, row1, 'sGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.gSack = this.physics.add.image(70, row4 - 15, 'gSack').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
         ];
 
         
@@ -117,8 +117,13 @@ class Play extends Phaser.Scene {
 
         this.input.on("dragend", (pointer, gameObject) => {
             this.isDragging = false;
-            gameObject.setAlpha(1); 
-            gameObject.setDepth(gameObject.originalDepth); 
+            gameObject.setAlpha(1);
+            gameObject.setDepth(gameObject.originalDepth);
+            
+            // Check if gSack is placed on tray
+            if (gameObject === this.gSack && !this.isGreenSackOnTray) {
+                this.gSack.setVisible(true); // Show the sack again if needed
+            }
         });
         
         // return item to starting position / this does nothing for now
@@ -133,8 +138,8 @@ class Play extends Phaser.Scene {
 
 
         // detect overlap between tray & rewards
-        this.physics.add.overlap(this.threeGold, this.tray, this.handleGoldOnTray, null, this);
-        this.physics.add.overlap(this.rGem, this.tray, this.handleRubyOnTray, null, this);
+        this.physics.add.overlap(this.gSack, this.tray, this.handleGreenSackOnTray, null, this);
+
 
 
 
@@ -163,41 +168,21 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.checkFrogeRewardsInTray();
+    
     }
 
-    handleGoldOnTray(gold, tray) {
-        this.isGoldOnTray = true; 
-    }
-
-    handleRubyOnTray(ruby, tray) {
-        this.isRubyOnTray = true; 
-    }
-
-    checkFrogeRewardsInTray() {
-        const goldBounds = this.threeGold.getBounds();
-        const rubyBounds = this.rGem.getBounds();
-        const trayBounds = this.tray.getBounds();
-
-        const isGoldInsideTray = Phaser.Geom.Intersects.RectangleToRectangle(goldBounds, trayBounds);
-        const isRubyInsideTray = Phaser.Geom.Intersects.RectangleToRectangle(rubyBounds, trayBounds);
-
-        if (isGoldInsideTray && !this.isGoldOnTray) {
-            this.isGoldOnTray = true;
-        } else if (!isGoldInsideTray && this.isGoldOnTray) {
-            this.isGoldOnTray = false;
-        }
-
-        if (isRubyInsideTray && !this.isRubyOnTray) {
-            this.isRubyOnTray = true;
-        } else if (!isRubyInsideTray && this.isRubyOnTray) {
-            this.isRubyOnTray = false;
-        }
+    handleGreenSackOnTray(sack, tray) {
+        if (sack === this.gSack) {
+            this.isGreenSackOnTray = true;
+        } 
     }
 
     bellRung() {
-        if (this.isGoldOnTray && this.isRubyOnTray) { 
-            this.scene.start('winScene');
+        // Only hide the gSack if it is on the tray
+        if (this.isGreenSackOnTray) {
+            this.gSack.setVisible(false); // Make the sack invisible
+            this.isGreenSackOnTray = false; // Reset the state
+            this.startSecondDialogueSequence(); // Start the next dialogue
         }
     }
 
@@ -253,10 +238,22 @@ class Play extends Phaser.Scene {
             "Bring all of their rewards onto the counter and ring the bell to let them know they can take it.",
             "Sound easy enough?",
             "Let's practice.",
-            "Please hand me the green sack under the counter."
+            "Go look for the quest contract with my face on it and give me the corresponding item."
         ];
 
         this.showNextDialogue();
+    }
+
+    startSecondDialogueSequence() {
+        this.dialogueQueue = [
+            "Nice!",
+            "You've pretty much got the basics down.",
+            "Not like there was much to learn in the first place- hahaha!",
+            "Anyways, you're pretty much set to fly solo now, so I'll get out of your hair.",
+            "Good luck!",
+            "You'll do great today."
+        ];
+        this.showNextDialogue(); // Show first line of new dialogue
     }
 
     advanceDialogue() {
