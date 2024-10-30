@@ -24,7 +24,6 @@ class Play extends Phaser.Scene {
         
         // pointer move for camera control
         this.input.on('pointermove', (pointer) => {
-            // check if mouse is above a certain Y position (e.g., 400)
             if (pointer.y > 500 && !this.isCameraDown) {
                 this.isCameraDown = true; 
                 this.tweens.add({
@@ -33,7 +32,7 @@ class Play extends Phaser.Scene {
                     duration: 500, 
                     ease: 'Power2', 
                 });
-            } else if (pointer.y < 200 && this.isCameraDown) {
+            } else if (pointer.y < 250 && this.isCameraDown) {
                 this.isCameraDown = false; 
                 this.tweens.add({
                     targets: this.cam,
@@ -58,7 +57,7 @@ class Play extends Phaser.Scene {
         });
 
         // add reward tray
-        this.tray = this.physics.add.sprite(200, 340, 'tray').setImmovable().setDepth(5);
+        this.tray = this.physics.add.image(205, 338, 'cTop').setImmovable().setDepth(5).setAlpha(0);
 
         // add quests
         this.quests = [
@@ -69,7 +68,6 @@ class Play extends Phaser.Scene {
 
         // add reward items
         this.items = [
-            this.gold = this.physics.add.image(115, 460, 'gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
             this.twoGold = this.physics.add.image(col1, row4 + 10, '2gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
             this.threeGold = this.physics.add.image(col3, row2, '3gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
             this.aGem = this.add.image(col4, row1, 'aGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),

@@ -12,6 +12,7 @@ class Menu extends Phaser.Scene {
         this.load.image('title', 'img/title.png')
 
         // load UI assets
+        this.load.image('cTop', 'img/countertop.png')
         this.load.image('box', 'img/box.png')
         this.load.image('divider', 'img/divider.png')
 
