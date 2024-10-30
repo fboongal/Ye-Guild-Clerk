@@ -14,14 +14,14 @@ class Win extends Phaser.Scene {
     }
 
     // restart button
-    const restartButton = this.add.text(570, invY, ' RESTART ', buttonConfig).setOrigin(0.5)
+    const restartButton = this.add.text(570, 520, ' RESTART ', buttonConfig).setOrigin(0.5)
     restartButton.setInteractive()
     restartButton.on("pointerdown", (pointer)=>{
         this.scene.start('playScene')
     })
 
     // restart button
-    const titleButton = this.add.text(430, invY, ' TO MENU ', buttonConfig).setOrigin(0.5)
+    const titleButton = this.add.text(430, 520, ' TO MENU ', buttonConfig).setOrigin(0.5)
     titleButton.setInteractive()
     titleButton.on("pointerdown", (pointer)=>{
         this.scene.start('menuScene')

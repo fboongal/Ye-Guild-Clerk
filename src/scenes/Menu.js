@@ -23,6 +23,9 @@ class Menu extends Phaser.Scene {
         this.load.image('bell', 'img/bell.png')
         this.load.image('tray', 'img/tray.png')
 
+        this.load.image('2gold', 'img/2gold.png')
+        this.load.image('3gold', 'img/3gold.png')
+
         this.load.image('gSack', 'img/sack.png')
 
         this.load.image('aGem', 'img/ame.png')

@@ -70,12 +70,14 @@ class Play extends Phaser.Scene {
         // add reward items
         this.items = [
             this.gold = this.physics.add.image(115, 460, 'gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.aGem = this.add.image(440, 615, 'aGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.dGem = this.add.image(100, 100, 'dGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.eGem = this.add.image(100, 100, 'eGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.rGem = this.add.image(100, 100, 'rGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.sGem = this.add.image(100, 100, 'sGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
-            this.gSack = this.add.image(100, 100, 'gSack').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
+            this.twoGold = this.physics.add.image(col1, row4 + 10, '2gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.threeGold = this.physics.add.image(col3, row2, '3gold').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.aGem = this.add.image(col4, row1, 'aGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.dGem = this.add.image(col2, row3, 'dGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.eGem = this.add.image(col1, row2, 'eGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.rGem = this.add.image(col4, row4, 'rGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.sGem = this.add.image(col2, row1, 'sGem').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5),
+            this.gSack = this.add.image(70, row4 - 15, 'gSack').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
         ];
 
         // apply hover for quests and itmes
@@ -117,7 +119,7 @@ class Play extends Phaser.Scene {
         });
 
         // detect overlap between tray & gold
-        this.physics.add.overlap(this.gold, this.tray, this.handleGoldOnTray, null, this);
+        this.physics.add.overlap(this.threeGold, this.tray, this.handleGoldOnTray, null, this);
 
         // enter adventurers!
         this.froge = this.add.sprite(-120, 180, 'froge').setDepth(0);
@@ -135,7 +137,7 @@ class Play extends Phaser.Scene {
     }
 
     update() {
-        this.checkGoldInTray();
+        this.checkFrogeRewardsInTray();
     }
 
     handleGoldOnTray(gold, tray) {
@@ -144,23 +146,44 @@ class Play extends Phaser.Scene {
         console.log('Gold is now on the tray');
     }
 
-    checkGoldInTray() {
-        const goldBounds = this.gold.getBounds();
+    handleRubyOnTray(ruby, tray) {
+        this.isRubyOnTray = true; 
+        this.itemOnTray = true; 
+        console.log('a Ruby is now on the tray');
+    }
+
+    checkFrogeRewardsInTray() {
+        const goldBounds = this.threeGold.getBounds();
+        const rubyBounds = this.rGem.getBounds();
         const trayBounds = this.tray.getBounds();
 
-        const isInsideTray = Phaser.Geom.Intersects.RectangleToRectangle(goldBounds, trayBounds);
+        const isGoldInsideTray = Phaser.Geom.Intersects.RectangleToRectangle(goldBounds, trayBounds);
+        const isRubyInsideTray = Phaser.Geom.Intersects.RectangleToRectangle(rubyBounds, trayBounds);
 
-        if (isInsideTray && !this.isGoldOnTray) {
+        if (isGoldInsideTray && !this.isGoldOnTray) {
             this.isGoldOnTray = true;
             this.itemOnTray = true; 
             console.log('Gold has entered the tray');
-        } else if (!isInsideTray && this.isGoldOnTray) {
+        } else if (!isGoldInsideTray && this.isGoldOnTray) {
             this.isGoldOnTray = false;
             this.itemOnTray = false; 
             console.log('Gold has left the tray');
         }
-    }
 
+        if (isRubyInsideTray && !this.isRubyOnTray) {
+            this.isRubyOnTray = true;
+            this.itemOnTray = true; 
+            console.log('Ruby has entered the tray');
+        } else if (!isRubyInsideTray && this.isRubyOnTray) {
+            this.isRubyOnTray = false;
+            this.itemOnTray = false; 
+            console.log('Ruby has left the tray');
+        }
+
+        if (this.isGoldOnTray && this.isRubyOnTray) {
+            console.log('Both gold and ruby are on the tray!');
+        }
+    }
 
     bellRung() {
         if (this.itemOnTray === true) { 
