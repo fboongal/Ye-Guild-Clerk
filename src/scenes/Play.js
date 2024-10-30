@@ -5,8 +5,9 @@ class Play extends Phaser.Scene {
 
     init(){
         this.isDragging = false;
-        this.itemOnTray = false;
         this.isGoldOnTray = false;
+        this.isRubyOnTray = false;
+        this.isTyping = false;
     }
 
     create(){
@@ -49,6 +50,10 @@ class Play extends Phaser.Scene {
         // clamp the camera's Y position to stay within bounds
         this.cam.scrollY = Phaser.Math.Clamp(this.cam.scrollY, 0, this.counter.height - this.cam.height);
 
+
+
+
+
         // add desk bell & ding 
         let ding = this.sound.add('ding');
 
@@ -59,7 +64,7 @@ class Play extends Phaser.Scene {
             this.bellRung();
         });
 
-        // add reward tray
+        // create invisible counter boundary
         this.tray = this.physics.add.image(205, 338, 'cTop').setImmovable().setDepth(5).setAlpha(0);
 
         // add quests
@@ -81,7 +86,11 @@ class Play extends Phaser.Scene {
             this.gSack = this.add.image(70, row4 - 15, 'gSack').setInteractive({ draggable: true, cursor: "pointer" }).setDepth(5)
         ];
 
-        // apply hover for quests and itmes
+        
+
+
+
+        // apply hover for quests & items
         this.items.forEach(item => {
             this.addHoverEffect(item);
         });
@@ -119,10 +128,19 @@ class Play extends Phaser.Scene {
             }
         });
 
-        // detect overlap between tray & gold
-        this.physics.add.overlap(this.threeGold, this.tray, this.handleGoldOnTray, null, this);
 
-        // enter adventurers!
+
+
+
+        // detect overlap between tray & rewards
+        this.physics.add.overlap(this.threeGold, this.tray, this.handleGoldOnTray, null, this);
+        this.physics.add.overlap(this.rGem, this.tray, this.handleRubyOnTray, null, this);
+
+
+
+
+
+        // enter adventurers!(+ tutorial clerk)
         this.clerk = this.add.sprite(-120,180, 'clerk').setDepth(0);
         this.froge = this.add.sprite(-120, 180, 'froge').setDepth(0);
         
@@ -136,6 +154,12 @@ class Play extends Phaser.Scene {
                 this.tweens.killTweensOf(this.clerk);
             }
         });
+
+
+
+        // create dialogue box & start dialogue sequence
+        this.createDialogueBox();
+        this.startDialogueSequence();
     }
 
     update() {
@@ -144,12 +168,10 @@ class Play extends Phaser.Scene {
 
     handleGoldOnTray(gold, tray) {
         this.isGoldOnTray = true; 
-        this.itemOnTray = true;
     }
 
     handleRubyOnTray(ruby, tray) {
         this.isRubyOnTray = true; 
-        this.itemOnTray = true;
     }
 
     checkFrogeRewardsInTray() {
@@ -162,26 +184,19 @@ class Play extends Phaser.Scene {
 
         if (isGoldInsideTray && !this.isGoldOnTray) {
             this.isGoldOnTray = true;
-            this.itemOnTray = true; 
         } else if (!isGoldInsideTray && this.isGoldOnTray) {
             this.isGoldOnTray = false;
-            this.itemOnTray = false; 
         }
 
         if (isRubyInsideTray && !this.isRubyOnTray) {
             this.isRubyOnTray = true;
-            this.itemOnTray = true; 
         } else if (!isRubyInsideTray && this.isRubyOnTray) {
             this.isRubyOnTray = false;
-            this.itemOnTray = false; 
-        }
-
-        if (this.isGoldOnTray && this.isRubyOnTray) {
         }
     }
 
     bellRung() {
-        if (this.itemOnTray === true) { 
+        if (this.isGoldOnTray && this.isRubyOnTray) { 
             this.scene.start('winScene');
         }
     }
@@ -207,4 +222,77 @@ class Play extends Phaser.Scene {
     stopBobbing(item) {
        this.tweens.killTweensOf(item);
     }
+
+    createDialogueBox() {
+        this.dialogueBox = this.add.graphics();
+        this.dialogueBox.fillStyle(0x000000, 0.8); 
+        this.dialogueBox.fillRect(200, 100, 160, 150);
+        this.dialogueBox.setInteractive(new Phaser.Geom.Rectangle(200, 100, 160, 150), Phaser.Geom.Rectangle.Contains);
+        
+        this.dialogueBox.on('pointerdown', () => {
+            this.advanceDialogue();
+            console.log("clicking dialogue");
+        });
+    
+        this.dialogueText = this.add.text(210, 110, '', {
+            font: '16px Arial',
+            fill: '#ffffff',
+            wordWrap: { width: 150, useAdvancedWrap: true }
+        }).setDepth(1); 
+    }
+
+    // Start a sequence of dialogues
+    startDialogueSequence() {
+        this.dialogueQueue = [
+            "Hello! You must be the new guild clerk!",
+            "Let me show you the ropes.",
+            "Let's begin.",
+            "Adventurers will come into the Guild to claim their rewards after completing their quests.",
+            "Look for the quest contracts on the board and see what each Adventurer gets for completing their quest.",
+            "Each quest will have a drawing of the Adventurer who has claimed it, as well as the list of rewards they'll earn.",
+            "Bring all of their rewards onto the counter and ring the bell to let them know they can take it.",
+            "Sound easy enough?",
+            "Let's practice.",
+            "Please hand me the green sack under the counter."
+        ];
+
+        this.showNextDialogue();
+    }
+
+    advanceDialogue() {
+        if (!this.isTyping && this.dialogueQueue.length > 0) {
+            this.showNextDialogue();
+        }
+    }
+
+    showNextDialogue() {
+        if (this.dialogueQueue.length > 0) {
+            const nextDialogue = this.dialogueQueue.shift();
+            this.updateDialogue(nextDialogue);
+        }
+    }
+
+    updateDialogue(text) {
+        this.dialogueText.setText(''); 
+        let index = 0;
+    
+        this.isTyping = true;
+    
+        this.time.removeAllEvents();
+    
+        this.time.addEvent({
+            delay: 25, 
+            callback: () => {
+                if (index < text.length) {
+                    this.dialogueText.text += text[index]; 
+                    index++;
+                } else {
+                    this.time.removeAllEvents(); 
+                    this.isTyping = false; 
+                }
+            },
+            loop: true
+        });
+    }
+
 }
