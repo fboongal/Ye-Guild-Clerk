@@ -104,6 +104,6 @@ class Menu extends Phaser.Scene {
 
     update(){
         // shortcut to start play scene
-        this.scene.start('playScene');
+        //this.scene.start('playScene');
     }
 }

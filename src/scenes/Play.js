@@ -6,7 +6,10 @@ class Play extends Phaser.Scene {
     init(){
         this.isDragging = false;
         this.isGreenSackOnTray = false;
+        this.isRGemOnTray = false;
+    this.isThreeGoldOnTray = false;
         this.isTyping = false;
+        this.isSecondDialogue = false;
     }
 
     create(){
@@ -120,9 +123,8 @@ class Play extends Phaser.Scene {
             this.isDragging = false;
             gameObject.setAlpha(1);
             gameObject.setDepth(gameObject.originalDepth);
-        
+            
             const isQuest = this.quests.includes(gameObject);
-        
             const isOnTray = this.physics.overlap(gameObject, this.tray);
             
             if (!isOnTray && !isQuest) {
@@ -131,20 +133,21 @@ class Play extends Phaser.Scene {
                 if (gameObject === this.gSack) {
                     this.isGreenSackOnTray = true;
                 }
+                if (gameObject === this.rGem) {
+                    this.isRGemOnTray = true; 
+                }
+                if (gameObject === this.threeGold) {
+                    this.isThreeGoldOnTray = true; 
+                }
             }
         });
-
+    
 
 
 
 
         // detect overlap between tray & rewards
-        this.physics.add.overlap(this.gSack, this.tray, this.handleGreenSackOnTray, null, this);
-
-
-
-
-
+        this.physics.add.overlap(this.items, this.tray, this.handleGreenSackOnTray, null, this);
 
         // enter adventurers!(+ tutorial clerk)
         this.clerk = this.add.sprite(-120,180, 'clerk').setDepth(0);
@@ -176,6 +179,12 @@ class Play extends Phaser.Scene {
         if (sack === this.gSack) {
             this.isGreenSackOnTray = true;
         } 
+        if (sack === this.rGem) {
+            this.isRGemOnTray = true;
+        }
+        if (sack === this.threeGold) {
+            this.isThreeGoldOnTray = true;
+        }
     }
 
     bellRung() {
@@ -183,6 +192,10 @@ class Play extends Phaser.Scene {
             this.gSack.setVisible(false); 
             this.isGreenSackOnTray = false; 
             this.startSecondDialogueSequence(); 
+        }
+     
+        if (this.isRGemOnTray && this.isThreeGoldOnTray && this.froge) {
+            this.fadeToWinScene();
         }
     }
 
@@ -245,6 +258,7 @@ class Play extends Phaser.Scene {
     }
 
     startSecondDialogueSequence() {
+        this.isSecondDialogue = true;
         this.dialogueQueue = [
             "Nice!",
             "You've pretty much got the basics down.",
@@ -288,10 +302,13 @@ class Play extends Phaser.Scene {
                     this.time.removeAllEvents(); 
                     this.isTyping = false;
     
+                    // Only check for leaving after the last dialogue
                     if (this.dialogueQueue.length === 0) {
-                        this.time.delayedCall(500, () => {
-                            this.clearDialogueAndExit();
-                        });
+                        if (this.isSecondDialogue) {
+                            this.time.delayedCall(500, () => {
+                                this.clearDialogueAndExit();
+                            });
+                        } 
                     }
                 }
             },
@@ -306,7 +323,12 @@ class Play extends Phaser.Scene {
             targets: this.clerk,
             x: -120, 
             duration: 1000, 
-            ease: 'Power2'
+            ease: 'Power2',
+            onComplete: () => {
+                this.time.delayedCall(5000, () => {
+                    this.frogeEnters();
+                });
+            }
         });
     }
 
@@ -317,6 +339,105 @@ class Play extends Phaser.Scene {
     
         this.time.delayedCall(500, () => {
             this.clerkLeaves();
+        });
+    }
+
+    frogeEnters() {
+        // Create a tween to slide in Froge
+        this.tweens.add({
+            targets: this.froge,
+            x: 110, // Adjust this value to your desired final position
+            duration: 8000,
+            ease: 'Power2',
+            onComplete: () => {
+                // Once Froge is in place, show the dialogue
+                this.showFrogeDialogue();
+            }
+        });
+    }
+    
+    showFrogeDialogue() {
+        // Create Froge's dialogue box
+        this.frogeDialogueBox = this.add.graphics();
+        this.frogeDialogueBox.fillStyle(0x004d00, 0.8); // Dark green color
+        this.frogeDialogueBox.fillRect(200, 100, 160, 150);
+        this.frogeDialogueBox.setInteractive(new Phaser.Geom.Rectangle(200, 100, 160, 150), Phaser.Geom.Rectangle.Contains);
+        
+        this.frogeDialogueText = this.add.text(210, 110, '', {
+            font: '16px Arial',
+            fill: '#ffffff',
+            wordWrap: { width: 150, useAdvancedWrap: true }
+        }).setDepth(1); 
+    
+        this.frogeDialogueBox.on('pointerdown', () => {
+            this.advanceFrogeDialogue();
+        });
+    
+        this.frogeDialogueQueue = [
+            "...",
+            "please. i am in pain.",
+            "you know what i'm here for.",
+            "please just make this quick.",
+            "it hurts."
+        ];
+    
+        this.showNextFrogeDialogue();
+    }
+
+    showNextFrogeDialogue() {
+        if (this.frogeDialogueQueue.length > 0) {
+            const nextDialogue = this.frogeDialogueQueue.shift();
+            this.updateFrogeDialogue(nextDialogue);
+        } 
+    }
+    
+    updateFrogeDialogue(text) {
+        this.frogeDialogueText.setText(''); 
+        let index = 0;
+    
+        this.isTyping = true;
+    
+        this.time.removeAllEvents();
+    
+        this.time.addEvent({
+            delay: 25, 
+            callback: () => {
+                if (index < text.length) {
+                    this.frogeDialogueText.text += text[index]; 
+                    index++;
+                } else {
+                    this.time.removeAllEvents(); 
+                    this.isTyping = false;
+                }
+            },
+            loop: true
+        });
+    }
+    
+    advanceFrogeDialogue() {
+        if (!this.isTyping && this.frogeDialogueQueue.length > 0) {
+            this.showNextFrogeDialogue();
+        }
+    }
+
+    clearFrogeDialogue() {
+        this.frogeDialogueText.setText('');
+        this.frogeDialogueBox.destroy();
+    }
+
+    showNextFrogeDialogue() {
+        if (this.frogeDialogueQueue.length > 0) {
+            const nextDialogue = this.frogeDialogueQueue.shift();
+            this.updateFrogeDialogue(nextDialogue);
+        } 
+    }
+    
+    fadeToWinScene() {
+        console.log("Fading to win scene..."); // Debug statement
+        this.cameras.main.fadeOut(1000, 0, 0, 0); 
+        this.cameras.main.on('camerafadeoutcomplete', () => {
+            console.log("Fade complete, transitioning to win scene."); // Debug statement
+            this.scene.start('winScene'); 
         });
     }
 }
