@@ -10,13 +10,15 @@ class Menu extends Phaser.Scene {
         this.load.image('counter', 'img/counter.png')
         this.load.image('end', 'img/end.png')
         this.load.image('title', 'img/title.png')
+        this.load.image('bg', 'img/tavern.jpg')
 
         // load UI assets
         this.load.image('cTop', 'img/countertop.png')
         this.load.image('box', 'img/box.png')
         this.load.image('divider', 'img/divider.png')
 
-        // load adventurers!
+        // load adventurers! (and tutorial clerk)
+        this.load.image('clerk', 'img/bart.png')
         this.load.image('froge', 'img/froge.png')
 
         // load items

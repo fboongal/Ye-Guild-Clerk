@@ -10,6 +10,9 @@ class Play extends Phaser.Scene {
     }
 
     create(){
+        // display background
+        this.counter = this.add.image(0, 0, 'bg').setOrigin(0).setDepth(0)
+
         // display counter 
         this.counter = this.add.image(0, 0, 'counter').setOrigin(0).setDepth(3);
 
@@ -120,16 +123,17 @@ class Play extends Phaser.Scene {
         this.physics.add.overlap(this.threeGold, this.tray, this.handleGoldOnTray, null, this);
 
         // enter adventurers!
+        this.clerk = this.add.sprite(-120,180, 'clerk').setDepth(0);
         this.froge = this.add.sprite(-120, 180, 'froge').setDepth(0);
         
-        // create tween to slide in adventurers
+        // create tween to slide in clerk
         const slideTween = this.tweens.add({
-            targets: this.froge, 
+            targets: this.clerk, 
             x: 110, 
             duration: 1500, 
             ease: 'Power2', 
             onComplete: () => {
-                this.tweens.killTweensOf(this.froge);
+                this.tweens.killTweensOf(this.clerk);
             }
         });
     }
@@ -140,14 +144,12 @@ class Play extends Phaser.Scene {
 
     handleGoldOnTray(gold, tray) {
         this.isGoldOnTray = true; 
-        this.itemOnTray = true; 
-        console.log('Gold is now on the tray');
+        this.itemOnTray = true;
     }
 
     handleRubyOnTray(ruby, tray) {
         this.isRubyOnTray = true; 
-        this.itemOnTray = true; 
-        console.log('a Ruby is now on the tray');
+        this.itemOnTray = true;
     }
 
     checkFrogeRewardsInTray() {
@@ -161,33 +163,26 @@ class Play extends Phaser.Scene {
         if (isGoldInsideTray && !this.isGoldOnTray) {
             this.isGoldOnTray = true;
             this.itemOnTray = true; 
-            console.log('Gold has entered the tray');
         } else if (!isGoldInsideTray && this.isGoldOnTray) {
             this.isGoldOnTray = false;
             this.itemOnTray = false; 
-            console.log('Gold has left the tray');
         }
 
         if (isRubyInsideTray && !this.isRubyOnTray) {
             this.isRubyOnTray = true;
             this.itemOnTray = true; 
-            console.log('Ruby has entered the tray');
         } else if (!isRubyInsideTray && this.isRubyOnTray) {
             this.isRubyOnTray = false;
             this.itemOnTray = false; 
-            console.log('Ruby has left the tray');
         }
 
         if (this.isGoldOnTray && this.isRubyOnTray) {
-            console.log('Both gold and ruby are on the tray!');
         }
     }
 
     bellRung() {
         if (this.itemOnTray === true) { 
             this.scene.start('winScene');
-        } else {
-            console.log('The gold is not on the tray yet!'); 
         }
     }
 
