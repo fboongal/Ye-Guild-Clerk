@@ -27,19 +27,19 @@ class Play extends Phaser.Scene {
         
         // pointer move for camera control
         this.input.on('pointermove', (pointer) => {
-            if (pointer.y > 500 && !this.isCameraDown) {
+            if (pointer.y > 520 && !this.isCameraDown) {
                 this.isCameraDown = true; 
                 this.tweens.add({
                     targets: this.cam,
-                    scrollY: 200, // move camera down
+                    scrollY: 200, 
                     duration: 500, 
                     ease: 'Power2', 
                 });
-            } else if (pointer.y < 250 && this.isCameraDown) {
+            } else if (pointer.y < 325 && this.isCameraDown) {
                 this.isCameraDown = false; 
                 this.tweens.add({
                     targets: this.cam,
-                    scrollY: 0, // move camera back up
+                    scrollY: 0, 
                     duration: 500, 
                     ease: 'Power2', 
                 });
@@ -121,14 +121,13 @@ class Play extends Phaser.Scene {
             gameObject.setAlpha(1);
             gameObject.setDepth(gameObject.originalDepth);
         
-            // Check if the item is placed on the tray
+            const isQuest = this.quests.includes(gameObject);
+        
             const isOnTray = this.physics.overlap(gameObject, this.tray);
             
-            if (!isOnTray) {
-                // Return to original position if not on the tray
+            if (!isOnTray && !isQuest) {
                 gameObject.setPosition(gameObject.originalPosition.x, gameObject.originalPosition.y);
             } else {
-                // If it's the green sack, update the state
                 if (gameObject === this.gSack) {
                     this.isGreenSackOnTray = true;
                 }
@@ -180,11 +179,10 @@ class Play extends Phaser.Scene {
     }
 
     bellRung() {
-        // Only hide the gSack if it is on the tray
         if (this.isGreenSackOnTray) {
-            this.gSack.setVisible(false); // Make the sack invisible
-            this.isGreenSackOnTray = false; // Reset the state
-            this.startSecondDialogueSequence(); // Start the next dialogue
+            this.gSack.setVisible(false); 
+            this.isGreenSackOnTray = false; 
+            this.startSecondDialogueSequence(); 
         }
     }
 
@@ -228,7 +226,7 @@ class Play extends Phaser.Scene {
         }).setDepth(1); 
     }
 
-    // Start a sequence of dialogues
+    // start dialogue secquence
     startDialogueSequence() {
         this.dialogueQueue = [
             "Hello! You must be the new guild clerk!",
@@ -255,7 +253,8 @@ class Play extends Phaser.Scene {
             "Good luck!",
             "You'll do great today."
         ];
-        this.showNextDialogue(); // Show first line of new dialogue
+        
+        this.showNextDialogue();
     }
 
     advanceDialogue() {
@@ -287,11 +286,37 @@ class Play extends Phaser.Scene {
                     index++;
                 } else {
                     this.time.removeAllEvents(); 
-                    this.isTyping = false; 
+                    this.isTyping = false;
+    
+                    if (this.dialogueQueue.length === 0) {
+                        this.time.delayedCall(500, () => {
+                            this.clearDialogueAndExit();
+                        });
+                    }
                 }
             },
             loop: true
         });
     }
+    
+    clerkLeaves() {
+        this.dialogueText.setText('');
+    
+        this.tweens.add({
+            targets: this.clerk,
+            x: -120, 
+            duration: 1000, 
+            ease: 'Power2'
+        });
+    }
 
+    clearDialogueAndExit() {
+        this.dialogueText.setText('');
+    
+        this.dialogueBox.destroy();
+    
+        this.time.delayedCall(500, () => {
+            this.clerkLeaves();
+        });
+    }
 }
