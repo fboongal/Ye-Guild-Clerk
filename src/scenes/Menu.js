@@ -7,16 +7,20 @@ class Menu extends Phaser.Scene {
         this.load.path = './assets/'
 
         // load background assets
-        this.load.image('bg', 'img/exBG.png')
+        this.load.image('counter', 'img/counter.png')
         this.load.image('end', 'img/end.png')
+        this.load.image('title', 'img/title.png')
 
         // load UI assets
         this.load.image('box', 'img/box.png')
         this.load.image('divider', 'img/divider.png')
 
+        // load adventurers!
+        this.load.image('froge', 'img/froge.png')
+
         // load items
         this.load.image('gold', 'img/gold.png')
-        this.load.image('flyer', 'img/questFlyer.png')
+        this.load.image('fQuest', 'img/frogeQuest.png')
         this.load.image('bell', 'img/bell.png')
         this.load.image('tray', 'img/tray.png')
 
@@ -39,7 +43,8 @@ class Menu extends Phaser.Scene {
             this.musicPlayed = false
         }
         
-        
+        // add title screen
+        this.add.image(centerX, centerY, 'title')
 
         // title config
         let titleConfig = {
@@ -57,16 +62,16 @@ class Menu extends Phaser.Scene {
 
         // button config
         let buttonConfig = {
-            fontSize: '20px',
+            fontSize: '50px',
             backgroundColor: '#FFFFFF',
             color: '#000000'
         }
 
         // display title text
-        this.add.text(centerX, centerY - 25, ' Ye Guild Clerk! ', titleConfig).setOrigin(0.5)
+        // this.add.text(centerX, centerY - 25, ' Ye Guild Clerk! ', titleConfig).setOrigin(0.5)
     
         // display play button
-        const playButton = this.add.text(centerX, centerY + 25, ' PLAY ', buttonConfig).setOrigin(0.5)
+        const playButton = this.add.text(centerX, centerY + 200, ' PLAY ', buttonConfig).setOrigin(0.5)
         // make play button interactive
         playButton.setInteractive()
         // on click, start playScene
