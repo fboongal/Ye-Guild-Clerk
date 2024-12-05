@@ -97,7 +97,7 @@ class Menu extends Phaser.Scene {
         })
 
         // instruction text
-        document.getElementById('info').innerHTML = 'Controls: Press [Left Click] to interact. Hold [Left Click] to drag.'
+        // document.getElementById('info').innerHTML = 'Controls: Press [Left Click] to interact. Hold [Left Click] to drag.'
     }
 
     update(){
