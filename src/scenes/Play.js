@@ -243,15 +243,16 @@ class Play extends Phaser.Scene {
     startDialogueSequence() {
         this.dialogueQueue = [
             "Hello! You must be the new guild clerk!",
-            "Let me show you the ropes.",
-            "Let's begin.",
+            "Let me show you how things work around here, so listen closely because I'll only be telling you this once.",
             "Adventurers will come into the Guild to claim their rewards after completing their quests.",
-            "Look for the quest contracts on the board and see what each Adventurer gets for completing their quest.",
-            "Each quest will have a drawing of the Adventurer who has claimed it, as well as the list of rewards they'll earn.",
-            "Bring all of their rewards onto the counter and ring the bell to let them know they can take it.",
-            "Sound easy enough?",
-            "Let's practice.",
-            "Go look for the quest contract with my face on it and give me the corresponding item."
+            "It's YOUR responsibility to give them their rewards as written on their quest contracts, which have their faces on them—",
+            "drawn by yours truly.",
+            ":3",
+            "Now here's the part where most people zone off and don't listen to what I have to say and look like a fool afterwords.", 
+            "Once you've located their rewards under the counter, place all of them ON THE COUNTER and THEN ring the bell.",
+            "After you ring the bell, they'll collect their rewards.",
+            "Sounds easy enough, right?",
+            "Alright now, let's practice. Go look for the quest contract with my face on it and give me the corresponding item."
         ];
 
         this.showNextDialogue();
